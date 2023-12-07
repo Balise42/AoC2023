@@ -113,14 +113,13 @@ fn parse_hand(line: &str, part1: bool) -> Hand {
     return Hand{ hand: hand.to_string(), bid: bid, part1: part1};
 }
 
-pub fn part1(s: String) {
+fn solve(s: String, part1: bool) {
     let lines = s.lines();
     let mut hands: Vec::<Hand> = Vec::new();
     for line in lines {
-        let hand = parse_hand(line, true);
+        let hand = parse_hand(line, part1);
         hands.push(hand);
     }
-
     hands.sort();
     let mut sum: i32 = 0;
     for i in 0..hands.len() {
@@ -129,18 +128,10 @@ pub fn part1(s: String) {
     println!("{}", sum);
 }
 
-pub fn part2(s: String) {
-    let lines = s.lines();
-    let mut hands: Vec::<Hand> = Vec::new();
-    for line in lines {
-        let hand = parse_hand(line, false);
-        hands.push(hand);
-    }
+pub fn part1(s: String) {
+    solve(s, true);
+}
 
-    hands.sort();
-    let mut sum: i32 = 0;
-    for i in 0..hands.len() {
-        sum += TryInto::<i32>::try_into((i+1)).unwrap() * hands.get(i).expect("hand").bid;
-    }
-    println!("{}", sum);
+pub fn part2(s: String) {
+    solve(s, false);
 }
