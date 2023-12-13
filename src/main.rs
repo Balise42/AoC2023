@@ -9,7 +9,8 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;*/
-mod day13;
+mod day12;
+//mod day13;
 
 fn main() {
     /*day01::part1(read_test_input(1));
@@ -56,10 +57,14 @@ fn main() {
     day11::part1(read_input(11));
     day11::part2(read_test_input(11));
     day11::part2(read_input(11));*/
-    /*day13::part1(read_test_input(13));
-    day13::part1(read_input(13));*/
+    day12::part1(read_test_input(12));
+    day12::part1(read_input(12));
+    day12::part2(read_test_input(12));
+    day12::part2(read_input(12));
+    /*day13::part1(read_test_input(13))
+    day13::part1(read_input(13));
     day13::part2(read_test_input(13));
-    day13::part2(read_input(13));
+    day13::part2(read_input(13));*/
 }
 
 fn read_input(day: usize) -> String {
