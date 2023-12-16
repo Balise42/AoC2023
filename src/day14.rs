@@ -1,12 +1,7 @@
-use std::collections::HashMap;
+#[path = "utils.rs"]
+mod utils;
 
-fn getGrid(s: String) -> Vec::<Vec::<char>> {
-    let mut grid: Vec::<Vec::<char>> = Vec::new();
-    for line in s.lines() {
-        grid.push(line.chars().collect());
-    }
-    return grid;
-}
+use std::collections::HashMap;
 
 fn getLoad(grid: Vec::<Vec::<char>>) -> usize {
     let mut totLoad: usize = 0;
@@ -110,14 +105,14 @@ fn cycle(grid: Vec::<Vec::<char>>) -> Vec::<Vec::<char>> {
 }
 
 pub fn part1(s: String) {
-    let grid = getGrid(s);
+    let grid = utils::get_grid(s);
     let load = getLoad(tilt_north(grid));
     println!("{:?}", load);
 }
 
 pub fn part2(s: String) {
     let mut seen: HashMap::<Vec::<Vec::<char>>, i32> = HashMap::new();
-    let grid = getGrid(s);
+    let grid = utils::get_grid(s);
     let mut newgrid = grid.clone();
     let mut length = 0;
     let mut first = 0;
