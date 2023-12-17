@@ -43,45 +43,9 @@ fn right(dir: char) -> Option<char> {
     }
 }
 
-fn get_neighbors(n: &Node, maxrow: usize, maxcol: usize) -> Vec::<Node> {
+fn get_neighbors(n: &Node, maxrow: usize, maxcol: usize, minstep: usize, maxstep: usize) -> Vec::<Node> {
     let mut res: Vec::<Node> = Vec::new();
-    let leftd = left(n.dir);
-    match leftd {
-        Some(d) => {
-            let leftn = get_dir(n.row, n.col, maxrow, maxcol, d);
-            match leftn {
-                Some(x) => { res.push( Node {row: x.0, col: x.1, dir: d, steps: 1})},
-                None => {}
-            }
-        },
-        None => {}
-    }
-
-    let rightd = right(n.dir);
-    match rightd {
-        Some(d) => {
-            let rightn = get_dir(n.row, n.col, maxrow, maxcol, d);
-            match rightn {
-                Some(x) => { res.push( Node {row: x.0, col: x.1, dir: d, steps: 1})},
-                None => {}
-            }
-        },
-        None => {}
-    }
-
-    if n.steps < 3 {
-        let nextn = get_dir(n.row, n.col, maxrow, maxcol, n.dir);
-        match nextn {
-            Some(x) => { res.push( Node {row: x.0, col: x.1, dir: n.dir, steps: n.steps + 1})},
-            None => {}
-        }
-    }
-    return res;
-}
-
-fn get_neighbors_p2(n: &Node, maxrow: usize, maxcol: usize) -> Vec::<Node> {
-    let mut res: Vec::<Node> = Vec::new();
-    if n.steps >= 4 {
+    if n.steps >= minstep {
         let leftd = left(n.dir);
         match leftd {
             Some(d) => {
@@ -107,7 +71,7 @@ fn get_neighbors_p2(n: &Node, maxrow: usize, maxcol: usize) -> Vec::<Node> {
         }
     }
 
-    if n.steps < 10 {
+    if n.steps < maxstep {
         let nextn = get_dir(n.row, n.col, maxrow, maxcol, n.dir);
         match nextn {
             Some(x) => { res.push( Node {row: x.0, col: x.1, dir: n.dir, steps: n.steps + 1})},
@@ -117,8 +81,7 @@ fn get_neighbors_p2(n: &Node, maxrow: usize, maxcol: usize) -> Vec::<Node> {
     return res;
 }
 
-pub fn part1(s: String) {
-    let grid = utils::get_int_grid(s);
+fn move_crucible(grid: Vec::<Vec::<usize>>, minstep: usize, maxstep: usize) {
     let maxrow = grid.len()-1;
     let maxcol = grid.get(0).unwrap().len() - 1;
 
@@ -141,7 +104,7 @@ pub fn part1(s: String) {
             break;
         }
     
-        let neighbors = get_neighbors(&u, maxrow, maxcol);
+        let neighbors = get_neighbors(&u, maxrow, maxcol, minstep, maxstep);
         for v in neighbors {
             let alt = visited.get(&u).expect("u") + grid.get(v.row).expect("row").get(v.col).expect("col");
             if !visited.contains_key(&v) || alt < *visited.get(&v).unwrap() {
@@ -152,37 +115,12 @@ pub fn part1(s: String) {
     }
 }
 
+pub fn part1(s: String) {
+    let grid = utils::get_int_grid(s);
+    move_crucible(grid, 0, 3);
+}
+
 pub fn part2(s: String) {
     let grid = utils::get_int_grid(s);
-    let maxrow = grid.len()-1;
-    let maxcol = grid.get(0).unwrap().len() - 1;
-
-    let mut pq : PriorityQueue::<Node, Reverse<usize>> = PriorityQueue::new();
-    let mut visited: HashMap::<Node, usize> = HashMap::new();
-
-    let u1 = Node{row: 0, col: 0, dir: 'E', steps: 0};
-    visited.insert(u1.clone(), 0);
-    pq.push(u1, Reverse(0));
-    let u2 = Node{row: 0, col: 0, dir: 'S', steps: 0};
-    visited.insert(u2.clone(), 0);
-    pq.push(u2, Reverse(0));
-
-
-    while !pq.is_empty() {
-        let u = pq.pop().unwrap().0;
-
-        if u.row == maxrow && u.col == maxcol && u.steps >= 4 {
-            println!("{:?}", visited.get(&u).unwrap());
-            break;
-        }
-    
-        let neighbors = get_neighbors_p2(&u, maxrow, maxcol);
-        for v in neighbors {
-            let alt = visited.get(&u).expect("u") + grid.get(v.row).expect("row").get(v.col).expect("col");
-            if !visited.contains_key(&v) || alt < *visited.get(&v).unwrap() {
-                visited.insert(v.clone(), alt);
-                pq.push(v, Reverse(alt));
-            }
-        }
-    }
+    move_crucible(grid, 4, 10);
 }
