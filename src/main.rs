@@ -14,8 +14,10 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
-mod day17;*/
+mod day17;
 mod day18;
+mod day19;*/
+mod day20;
 
 fn main() {
     /*day01::part1(read_test_input(1));
@@ -85,11 +87,16 @@ fn main() {
     day17::part1(read_test_input(17));
     day17::part1(read_input(17));
     day17::part2(read_test_input(17));
-    day17::part2(read_input(17));*/
+    day17::part2(read_input(17));
     day18::part1(read_test_input(18));
     day18::part1(read_input(18));
     day18::part2(read_test_input(18));
     day18::part2(read_input(18));
+    day19::part1(read_test_input(19));
+    day19::part1(read_input(19));*/
+    day20::part1(read_test_input(20));
+    day20::part1(read_input(20));
+    day20::part2(read_input(20));
 }
 
 fn read_input(day: usize) -> String {
