@@ -191,20 +191,148 @@ pub fn part1(s: String) {
     println!("{}", res);
 }*/
 
-
+#[derive(Debug)]
 struct Cube {
     xmin: i32,
     xmax: i32,
     mmin: i32,
-    mmax: i32;
+    mmax: i32,
     amin: i32,
     amax: i32,
     smin: i32,
     smax: i32,
 }
 
-fn get_valid_cubes(c: Cube) {
-    ... split the atom.
+fn get_valid_cubes(c: Cube, workflows: HashMap::<String, Vec::<Rule>>, name: String) -> Vec::<Cube> {
+
+    let mut res: Vec::<Cube> = Vec::new();
+    if (name == "R") {
+        return res;
+    }
+    if (name == "A") {
+        res.push(c);
+        return res;
+    }
+    let wf = workflows.get(&name).expect("workflow");
+    
+    for rule in wf {
+        if rule.cat == '.' {
+            return get_valid_cubes(c, workflows.clone(), rule.dest.clone());
+        }
+
+        match rule.cat {
+            'x' => {
+                if rule.lt {
+                    if c.xmax < rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.xmin >= rule.val {
+                        continue;
+                    }
+                } else if !rule.lt {
+                    if  c.xmin > rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.xmax <= rule.val {
+                        continue;
+                    }
+                }
+                let c1;
+                let c2;
+                if (rule.lt) {
+                    c1 = Cube { xmin: c.xmin, xmax: rule.val-1, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                    c2 = Cube { xmin: rule.val, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                } else {
+                    c1 = Cube { xmin: c.xmin, xmax: rule.val, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                    c2 = Cube { xmin: rule.val+1, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                }
+                res = get_valid_cubes(c1, workflows.clone(), name.clone());
+                res.append(&mut get_valid_cubes(c2, workflows.clone(), name.clone()));
+                return res;
+            },
+            'm' => {
+                if rule.lt {
+                    if c.mmax < rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.mmin >= rule.val {
+                        continue;
+                    }
+                } else if !rule.lt {
+                    if  c.mmin > rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.mmax <= rule.val {
+                        continue;
+                    }
+                }
+                let c1;
+                let c2;
+                if (rule.lt) {
+                    c1 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: rule.val-1, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                    c2 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: rule.val, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                } else {
+                    c1 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: rule.val, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                    c2 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: rule.val+1, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:c.smax};
+                }
+                res = get_valid_cubes(c1, workflows.clone(), name.clone());
+                res.append(&mut get_valid_cubes(c2, workflows.clone(), name.clone()));
+                return res;
+            },
+            'a' => {
+                if rule.lt {
+                    if c.amax < rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.amin >= rule.val {
+                        continue;
+                    }
+                } else if !rule.lt {
+                    if  c.amin > rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.amax <= rule.val {
+                        continue;
+                    }
+                }
+                let c1;
+                let c2;
+                if (rule.lt) {
+                    c1 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: rule.val-1, smin: c.smin, smax:c.smax};
+                    c2 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:rule.val, amax: c.amax, smin: c.smin, smax:c.smax};
+                } else {
+                    c1 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: rule.val, smin: c.smin, smax:c.smax};
+                    c2 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:rule.val+1, amax: c.amax, smin: c.smin, smax:c.smax};
+                }
+                res = get_valid_cubes(c1, workflows.clone(), name.clone());
+                res.append(&mut get_valid_cubes(c2, workflows.clone(), name.clone()));
+                return res;
+            },
+            's' => {
+                if rule.lt {
+                    if c.smax < rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.smin >= rule.val {
+                        continue;
+                    }
+                } else if !rule.lt {
+                    if  c.smin > rule.val {
+                        return get_valid_cubes(c, workflows.clone(), rule.dest.clone())
+                    } else if c.smax <= rule.val {
+                        continue;
+                    }
+                }
+                let c1;
+                let c2;
+                if (rule.lt) {
+                    c1 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:rule.val-1};
+                    c2 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: rule.val, smax:c.smax};
+                } else {
+                    c1 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: c.smin, smax:rule.val};
+                    c2 = Cube { xmin: c.xmin, xmax: c.xmax, mmin: c.mmin, mmax: c.mmax, amin:c.amin, amax: c.amax, smin: rule.val+1, smax:c.smax};
+                }
+                res = get_valid_cubes(c1, workflows.clone(), name.clone());
+                res.append(&mut get_valid_cubes(c2, workflows.clone(), name.clone()));
+                return res;
+            },
+            _ => {return res;}
+        };
+    }
+    return res;
 }
 
 pub fn part2(s: String) {
@@ -216,14 +344,18 @@ pub fn part2(s: String) {
         } else {
             let mut name = "";
             let (name, workflow, mut bound) = parse_workflow(line);
+            workflows.insert(name.clone(), workflow);
         }
     }
 
     let cube = Cube{xmin: 1, xmax: 4000, mmin: 1, mmax: 4000, amin: 1, amax: 4000, smin: 1, smax: 4000};
-    res = get_valid_cubes(cube);
-    let mut sum = 0;
+    let res = get_valid_cubes(cube, workflows, "in".to_string());
+    let mut sum: u64 = 0;
     for c in res {
-        sum += (c.xmax - c.xmin + 1) * (c.mmax - c.mmin + 1) * (c.amax - c.amin + 1) + (c.smax - c.smin + 1);
+        sum += TryInto::<u64>::try_into(c.xmax - c.xmin + 1).unwrap() * 
+            TryInto::<u64>::try_into(c.mmax - c.mmin + 1).unwrap() * 
+            TryInto::<u64>::try_into(c.amax - c.amin + 1).unwrap() *
+            TryInto::<u64>::try_into(c.smax - c.smin + 1).unwrap();
     }
     println!("{}", sum);
 }
