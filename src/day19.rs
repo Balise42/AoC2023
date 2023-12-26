@@ -131,66 +131,6 @@ pub fn part1(s: String) {
     println!("{}", sum);
 }
 
-/*pub fn part2(s: String) {
-    let mut workflows: HashMap::<String, Vec::<Rule>> = HashMap::new();
-    let mut bounds: HashMap::<char, Vec::<i32>> = HashMap::new();
-
-    bounds.insert('x', Vec::new());
-    bounds.insert('m', Vec::new());
-    bounds.insert('a', Vec::new());
-    bounds.insert('s', Vec::new());
-
-    for line in s.lines() {
-        if line.trim() == "" {
-            break;
-        } else {
-            let mut name = "";
-            let (name, workflow, mut bound) = parse_workflow(line);
-            workflows.insert(name.clone(), workflow);
-            for (key, value) in bound.iter_mut() {
-                bounds.entry(*key).and_modify(|x| {x.append(value)});
-            }
-        }
-    }
-
-    for bound in bounds.values_mut() {
-        for i in bound.clone() {
-            bound.push(i+1);
-        }
-        bound.push(1);
-        bound.sort();
-        bound.push(4001);
-    }
-
-    let mut res: i64 = 0;
-
-    println!("{}", bounds.get(&'x').unwrap().len() * bounds.get(&'m').unwrap().len() * bounds.get(&'m').unwrap().len() * bounds.get(&'s').unwrap().len() );
-
-    for i in 0..bounds.get(&'x').unwrap().len() {
-        for j in 0..bounds.get(&'m').unwrap().len() {
-            for k in 0..bounds.get(&'a').unwrap().len() {
-                for l in 0..bounds.get(&'s').unwrap().len() {
-                    let mut piece: HashMap::<char, i32> = HashMap::new();
-                    piece.insert('x', *bounds.get(&'x').unwrap().get(i).unwrap());
-                    piece.insert('m', *bounds.get(&'m').unwrap().get(j).unwrap());
-                    piece.insert('a', *bounds.get(&'a').unwrap().get(k).unwrap());
-                    piece.insert('s', *bounds.get(&'s').unwrap().get(l).unwrap());
-                    let w = process_workflow(&piece, workflows.clone(), "in".to_string());
-                    if w == "A" {
-                        let x_width: i64 = (*bounds.get(&'x').unwrap().get(i+1).unwrap() - *bounds.get(&'x').unwrap().get(i).unwrap()).try_into().unwrap();
-                        let m_width: i64 = (*bounds.get(&'m').unwrap().get(j+1).unwrap() - *bounds.get(&'m').unwrap().get(j).unwrap()).try_into().unwrap();
-                        let a_width: i64 = (*bounds.get(&'a').unwrap().get(k+1).unwrap() - *bounds.get(&'a').unwrap().get(k).unwrap()).try_into().unwrap();
-                        let s_width: i64 = (*bounds.get(&'s').unwrap().get(l+1).unwrap() - *bounds.get(&'s').unwrap().get(l).unwrap()).try_into().unwrap();
-                        res += x_width * m_width * a_width * s_width;
-                    }
-                }
-            }
-        }
-    }
-
-    println!("{}", res);
-}*/
-
 #[derive(Debug)]
 struct Cube {
     xmin: i32,
