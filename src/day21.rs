@@ -45,7 +45,7 @@ fn get_infinite_steps(grid: &Vec::<Vec::<char>>, last_steps: &HashSet<(i32, i32)
         let s0m = modulo(s.0-1, height);
         let s0p = modulo(s.0 + 1, height);
         let s1m = modulo(s.1-1, width);
-        let s1p = modulo(s.1-1, width);
+        let s1p = modulo(s.1+1, width);
 
 
         if *grid.get(s0m).unwrap().get(s1).unwrap() != '#' {
@@ -89,9 +89,16 @@ pub fn part2(s: String, num: i32) {
             }
         }
     }
-    for i in 0..num {
+    let mut prev = 0;
+    let mut prevp = 0;
+    for i in 1..=num {
         last_steps = get_infinite_steps(&grid, &last_steps);
-        println!("{}", last_steps.len());
+        let numsteps = last_steps.len();
+        if (i % 131 == 65) {
+            println!("{} {} {} {}", i, numsteps, numsteps-prev, (numsteps as i32) - (prev as i32)- (prevp as i32));
+            prevp = numsteps - prev;
+            prev = last_steps.len();
+        }
     }
     println!("{}", last_steps.len());
 }

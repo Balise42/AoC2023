@@ -16,9 +16,9 @@ mod day15;
 mod day16;
 mod day17;
 mod day18;*/
-mod day19;
+//mod day19;
 //mod day20;
-//mod day21;
+mod day21;
 //mod day22;
 //mod day23;
 //mod day24;
@@ -97,23 +97,23 @@ fn main() {
     day18::part1(read_input(18));
     day18::part2(read_test_input(18));
     day18::part2(read_input(18));*/
-    day19::part1(read_test_input(19));
+    /*day19::part1(read_test_input(19));
     day19::part1(read_input(19));
     day19::part2(read_test_input(19));
-    day19::part2(read_input(19));
+    day19::part2(read_input(19));*/
     /*day20::part1(read_test_input(20));
     day20::part1(read_input(20));
-    day20::part2(read_input(20));*/
-    /*day21::part1(read_test_input(21), 6);
-    day21::part1(read_input(21), 64);
-    day21::part2(read_test_input(21), 26501365);*/
+    day20::part2(read_input(20));
+    day21::part1(read_test_input(21), 6);
+    day21::part1(read_input(21), 64);*/
+    day21::part2(read_input(21), 750);
     /*day22::part1(read_test_input(22));
     day22::part1(read_input(22));
     day22::part2(read_test_input(22));
     day22::part2(read_input(22));*/
     /*day23::part1(read_test_input(23));
-    day23::part1(read_input(23));
-    day23::part2(read_test_input(23));
+    day23::part1(read_input(23));*/
+    /*day23::part2(read_test_input(23));
     day23::part2(read_input(23));*/
     /*day24::part1(read_test_input(24), 7.0, 27.0);
     day24::part1(read_input(24), 200000000000000.0, 400000000000000.0)*/
