@@ -6,8 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-memoize = "0.4.1"
-michie = "3.0.2"
-num = "0.4.1"
+memoize = { version = "0.4.2", features = ["full"], git = "https://github.com/dermesser/memoize.git" }
 priority-queue = "1.3.2"
 regex = "1.10.2"
