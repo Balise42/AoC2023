@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use memoize::memoize;
+use std::collections::{HashMap, HashSet};
 #[path = "utils.rs"]
 mod utils;
 
@@ -99,8 +98,19 @@ pub fn part1(s: String) {
 }
 
 fn get_max_path_graph(graph: &HashMap::<(usize, usize), Vec::<((usize, usize), usize)>>, path: Vec::<(usize, usize)>, startr: usize, startc: usize, endr: usize, endc: usize) -> Option::<i32> {
+    // 5433 too low
     if startr == endr && startc == endc {
-        return Some(0);
+        let mut len = 0;
+        for i in 0..path.len()-1 {
+            let edges = graph.get(path.get(i).unwrap()).unwrap();
+            for edge in edges {
+                if edge.0 == *path.get(i+1).unwrap() {
+                    len += edge.1;
+                }
+            }
+        }
+        println!("{}", len);
+        return Some(len as i32);
     }
     let node = (startr, startc);
     let neighs = graph.get(&node).unwrap_or(&Vec::<((usize, usize),usize)>::new()).clone();
@@ -113,7 +123,7 @@ fn get_max_path_graph(graph: &HashMap::<(usize, usize), Vec::<((usize, usize), u
         newpath.push(neigh.0);
         let next = get_max_path_graph(graph, newpath, neigh.0.0, neigh.0.1, endr, endc);
         match next {
-            Some(x) => {res = std::cmp::max(res, x + neigh.1 as i32)},
+            Some(x) => {res = std::cmp::max(res, x);},
             None => {}
         };
     }
@@ -159,51 +169,33 @@ pub fn part2(s: String) {
 
 fn contract_graph(grid: &Vec::<Vec::<char>>, startr: usize, startc: usize, endr: usize, endc: usize) -> HashMap::<(usize, usize), Vec::<((usize, usize), usize)>> {
     let mut graph: HashMap::<(usize, usize), Vec::<((usize, usize), usize)>> = HashMap::new();
-    let mut node_a = (startr, startc);
-    let mut node = (startr+1, startc);
-    let mut prev = (startr, startc);
-    let mut neighs = get_neighbors(&grid, startr+1, startc, &Vec::from([prev]));
-    let mut i: usize = 1;
-    while neighs.len() == 1 {
-        prev = node.clone();
-        node = *neighs.get(0).unwrap();
-        neighs = get_neighbors(&grid, node.0, node.1, &Vec::from([prev]));
-        i +=1;
-    }
-    graph.insert(node_a, neighs.iter().map({|x| (*x, i+1)}).collect());
-    for n in &neighs {
-        contract_edge_from(*n, grid, &mut graph, &mut Vec::from([node_a, node]), node, endr, endc);
-    }
-    println!("{:?}",neighs);
-    for (k, v) in graph.iter() {
-        println!("{:?} {:?}", k, v);
-    }
-    return graph;
-}
-
-fn contract_edge_from(start: (usize, usize), grid: &Vec::<Vec::<char>>, graph: &mut HashMap::<(usize, usize), Vec::<((usize, usize), usize)>>, path: &mut Vec::<(usize, usize)>, last: (usize, usize), endr: usize, endc: usize) {
-    //println!("{:?}", graph);
-    let mut prev = last;
-    let mut node = start;
-    path.push(prev);
-    let mut neighs = get_neighbors(&grid, node.0, node.1, path);
-    let mut i: usize = 0;
-    while neighs.len() == 1 {
-        prev = node.clone();
-        node = *neighs.get(0).unwrap();
-        path.push(prev);
-        neighs = get_neighbors(&grid, node.0, node.1, path);
-        i +=1;
-    }
-
-    if(node == (endr, endc)) {
-        graph.insert(start, Vec::from([(node, i)]));
-    }
-
-    if neighs.len() >=2 {
-        graph.insert(start, neighs.iter().map({|x| (*x, i)}).collect());
-        for n in &neighs {
-            contract_edge_from(*n, grid, graph, path, node, endr, endc);
+    let mut intpoints: HashSet::<(usize, usize)> = HashSet::new();
+    for i in 0..grid.len() {
+        for j in 0..grid.get(0).unwrap().len() {
+            if *grid.get(i).unwrap().get(j).unwrap() == '.' && get_neighbors(grid, i, j, &Vec::new()).len() > 2 {
+                intpoints.insert((i, j));
+            }
         }
     }
+    intpoints.insert((startr, startc));
+    intpoints.insert((endr, endc));
+
+    for i in &intpoints {
+        let mut path: Vec::<(usize, usize)> = Vec::new();
+        path.push(*i);
+        graph.insert(*i, Vec::new());
+        for neigh in get_neighbors(grid, i.0, i.1, &path) {
+            let mut newpath= path.clone();
+            let mut n = neigh;
+            let mut len = 1;
+            newpath.push(neigh);
+            while !intpoints.contains(&n) {
+                n = *get_neighbors(grid, n.0, n.1, &newpath).get(0).unwrap();
+                newpath.push(n);
+                len += 1;
+            }
+            graph.get_mut(&i).unwrap().push((n, len));
+        }
+    }
+    return graph;
 }
